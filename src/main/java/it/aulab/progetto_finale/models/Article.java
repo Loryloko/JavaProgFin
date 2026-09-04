@@ -1,6 +1,9 @@
 package it.aulab.progetto_finale.models;
 
 import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -9,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
@@ -18,7 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-// IMPORTA ESPLICITAMENTE LA TUA CLASSE CATEGORY (Risolve il crash di Hibernate)
 import it.aulab.progetto_finale.models.Category; 
 
 @Setter
@@ -48,13 +51,38 @@ public class Article {
 
     @Column(nullable = true)
     @NotNull
+    @DateTimeFormat(pattern = "yyyyMMdd")
     private LocalDate publishDate;
+
+    @Column(nullable = true)
+    private Boolean isAccepted;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"articles"})
+    private User user;
 
     @ManyToOne
     @JsonIgnoreProperties({"articles"})
     private Category category;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @OneToOne(mappedBy = "article")
+    @JsonIgnoreProperties({"article"})
+    private Image image;
+
+    @Override
+    public boolean equals(Object obj){
+        Article article = (Article) obj;
+
+        if (title.equals(article.getTitle()) &&
+        subtitle.equals(article.getSubtitle()) &&
+        body.equals(article.getBody()) &&
+        publishDate.equals(article.getPublishDate()) &&
+        category.getName().equals(article.getCategory().getName()) &&
+        image.getPath().equals(article.getImage().getPath())) {
+            return true;
+        }
+
+        return false;
+    }
 }

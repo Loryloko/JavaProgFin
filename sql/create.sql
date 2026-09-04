@@ -29,7 +29,7 @@ create table articles (
     FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
-create TABLE user_roles (
+create TABLE users_roles (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT,
     role_id BIGINT,

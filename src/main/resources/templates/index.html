@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
+<!-- Aggiunto il name-space sec per far funzionare la sicurezza di Spring -->
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org">
 
 <!-- Fragment head -->
 <head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha384-PPIZEGYM1v8zp5Py7UjFb79S58UeqCL9pYVnVPURKEqvioPROaVAJKKLzvH2rDnI" crossorigin="anonymous" referrerpolicy="no-referrer" />    
     <title th:text="${title}">Title</title>
 </head>
 <!-- fine fragment head -->
@@ -22,22 +21,38 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li sec:authorize="isAuthenticated()" class="nav-item">
-                <a class="nav-link" href="/articles/create">Crea articolo</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="">Link</a>
-            </li>
-
+            <!-- Struttura della Navbar Corretta, Ripulita dai Duplicati -->
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Crea articolo</a>
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li sec:authorize="isAuthenticated && hasRole('ROLE_WRITER')" class="nav-item">
+                        <a class="nav-link" href="/articles/create">Crea articolo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                        <a class="nav-link" href="/articles">Tutti gli articoli</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                        <div class="d-flex">
+                        <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard admin</a>
+                            <div class="mt-1" th:if="${careerRequest > 0}">
+                                <i class="fas fa-bell fa-1 pt-2"></i>
+                                <span class="badge rounded-pill bg-danger text-white px-1" th:text="${careerRequest}"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item" set:authorize="hasRole('ROLE_REVISOR')">
+                        <div class="d-flex">
+                            <a class="nav-link" href="/revisor/dashboard">Dashboard revisor</a>
+                            <div class="mt-1" th:if="${articlesToBeRevised > 0}">
+                                <i class="fas fa-bell fa-1 pt-2"></i>
+                                <span class="badge rounded-pill bg-danger text-white px-1" th:text="${articlesToBeRevised}"></span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item" sec:authoroze="hasRole('ROLE_WRITER')">
+                        <a class="nav-link" href="/writer/dashboard">Dashboard writer</a>
                     </li>
 
                     <!-- Menu Accesso Dinamico -->
@@ -56,13 +71,13 @@
                 <!-- Testo di Benvenuto visibile solo se l'utente è autenticato -->
                 <div class="navbar-text me-3" sec:authorize="isAuthenticated()">
                     Benvenuto: <span th:text="${#authentication.name}">Utente</span>
-                </div>                
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" name="keyword" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                </div> 
             </div>
-        </div>
+        </div>               
+        <form class="d-flex" th:action="@{/articles/search}" method="get">
+            <input class="form-control me-2" type="search" placeholder="Search" name="keyword" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
     </nav>
     <!-- fine navbar -->
 
@@ -77,7 +92,7 @@
                 <!-- Contact Info -->
                 <div class="col-md-4 mb-3 text-end">
                     <h5>Lavora con noi</h5>
-                    <a href="#" class="btn btn-primary">Richiedi</a>
+                    <a th:href="@{/operations/career/request}" class="btn btn-primary">Richiedi</a>
                 </div>
             </div>
         </div>
@@ -87,9 +102,7 @@
     </footer>
     <!-- fine del footer -->
 
-    <!-- fragment script bootstrap -->
-    <script th:fragment="bootstrapScript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <!-- fine fragment script bootstrap -->
+    <script th:fragment="bootstrapScript" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
 </body>
 </html>

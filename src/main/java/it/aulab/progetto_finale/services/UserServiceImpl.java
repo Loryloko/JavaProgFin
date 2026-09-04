@@ -75,5 +75,12 @@ public class UserServiceImpl implements UserService {
         } catch (AuthenticationException e) {
             e.printStackTrace();
         }
+
+       
     }
+    
+    @Override
+        public User find(Long id){
+            return userRepository.findById(id).get();
+        }
 }
