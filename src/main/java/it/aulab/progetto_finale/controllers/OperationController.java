@@ -70,7 +70,7 @@ public class OperationController {
     }
 
     @PostMapping("/career/request/accept/{id}")
-    public String careerRequestAccept(@PathVariable Long requestId, RedirectAttributes redirectAttributes) {
+    public String careerRequestAccept(@PathVariable("id") Long requestId, RedirectAttributes redirectAttributes) {
         
         careerRequestService.careerAccept(requestId);
         redirectAttributes.addFlashAttribute("successMessage", "Richiesta accettata con successo");
