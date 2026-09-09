@@ -129,26 +129,25 @@ public class ArticleController {
 
     @PostMapping("/update/{id}")
     public String articleUpdate(@PathVariable("id") Long id,
-                                @Valid @ModelAttribute("article") Article article,
-                                BindingResult result,
-                                RedirectAttributes redirectAttributes,
-                                Principal principal,
-                                MultipartFile file,
-                                Model viewModel) {
-        
-        if (result.hasErrors()) {
-            viewModel.addAttribute("title", "Article update");
-            article.setImage(articleService.read(id).getImage());
-            viewModel.addAttribute("article", article);
-            viewModel.addAttribute("categories", categoryService.readAll());
-            return "article/edit";
-        }
+                            @Valid @ModelAttribute("article") Article article,
+                            BindingResult result,
+                            RedirectAttributes redirectAttributes,
+                            Principal principal,
+                            MultipartFile file,
+                            Model viewModel) {
+    
+    if (result.hasErrors()) {
+        viewModel.addAttribute("title", "Article update");
+        article.setImage(articleService.read(id).getImage());
+        viewModel.addAttribute("article", article);
+        viewModel.addAttribute("categories", categoryService.readAll());
+        return "article/edit";
+    }
 
-        articleService.update(id, article, file);
-        redirectAttributes.addFlashAttribute("successMessage", "Articolo modificato con successo!");
+    articleService.update(id, article, file);
+    redirectAttributes.addFlashAttribute("successMessage", "Articolo modificato con successo!");
 
-        return "redirect:/articles";
-        
+    return "redirect:/writer/dashboard";
     }
 
     @GetMapping("/delete/{id}")

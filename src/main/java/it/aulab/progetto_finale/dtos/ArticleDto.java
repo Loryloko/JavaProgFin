@@ -20,7 +20,7 @@ public class ArticleDto {
     private String subtitle;
     private String body;
 
-    @DateTimeFormat(pattern = "yyyyMMdd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishDate;
 
     private Boolean isAccepted;

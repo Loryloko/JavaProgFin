@@ -44,11 +44,10 @@ public class ImageServiceImpl implements ImageService{
     private final RestTemplate restTemplate = new RestTemplate();
 
       public void saveImageOnDb(String url, Article article){
-        String nameFile = url.substring(url.lastIndexOf("/") + 1);
+        url = url.replace(supabaseBucket, supabaseImage);      
         
-        String publicUrl = supabaseImage + nameFile;
+        imageRepository.save(Image.builder().path(url).article(article).build());
         
-        imageRepository.save(Image.builder().path(publicUrl).article(article).build());
     }
 
     @Async

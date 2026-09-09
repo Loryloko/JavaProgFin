@@ -18,7 +18,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 my-5">
-                    <form th:action="@{/articles/update/{id}(id=${article.id})}" method="POST" th:object="${article}" enctype="multipart/form-data">
+                    <form th:action="@{/articles/update/{id}(id=${article.id})}" method="POST" th:object="${article}" enctype="multipart/form-data" novalidate>
+                    <input type="hidden" th:field="*{id}">
+                    <input type="hidden" th:field="*{user.id}" />
                     <div class="row mb-3">
                         <div class="col">
                             <label for="articleTitle" class="form-label">Titolo</label>
@@ -45,10 +47,11 @@
 
                     <div class="mb-3">
                         <label for="category" class="form-label">Category</label>
-                        <select id="category" th:field="*{category}" class="form-select">
+                        <select id="category" th:field="*{category.id}" class="form-select">
                             <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-                            <p th:errors="*{category}" class="text-danger" th:if="${#fields.hasErrors('category')}"></p>
                         </select>
+                        <p th:errors="*{category}" class="text-danger" th:if="${#fields.hasErrors('category')}"></p>
+                       
                     </div>
 
                     <div class="mb-3 d-felx flex-column" th:if="${article.image != null}">
