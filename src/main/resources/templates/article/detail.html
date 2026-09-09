@@ -36,12 +36,11 @@
                 <div class="text-center">
                     <h2 th:text="${article.subtitle}">Sottotitolo</h2>
                     
-                    <p class="fs-5">Categoria:
-                        <a th:href="@{/categories/search/{id}(id=${article.category.id})}" class="text-capitalize fw-bold text-muted" th:text="${article.category.name}">categoria</a>
+                    <p class="fs-5" th:if="${article.category != null}">Categoria:
+                    <a th:href="@{/categories/search/{id}(id=${article.category.id})}" class="text-capitalize fw-bold text-muted" th:text="${article.category.name}">categoria</a>
                     </p>
-                    
-                    <p class="fs-5" th:if="${article.category == null}">Nessuna categoria</p>
 
+                    <p class="fs-5" th:if="${article.category == null}">Categoria: <span class="text-muted fw-bold">Nessuna categoria</span></p>
                     <div class="text-muted my-3">
                         <p>Redatto il <span th:text="${article.publishDate}">data</span> da
                         <a class="text-muted" th:href="@{/search/{id}(id=${article.user.id})}">

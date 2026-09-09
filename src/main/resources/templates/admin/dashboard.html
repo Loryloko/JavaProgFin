@@ -61,7 +61,7 @@
                     <tbody>
                         <tr th:each="category : ${categories}">
                             <td th:text="${category.id}"></td>
-                            <td th:text="${category.name}"></td>
+                            <td th:text="${category.name}"></td>                                              
                             <td class="text-end">
                                 <a th:href="@{/categories/edit/{id}(id=${category.id})}" class="btn btn-warning m-2">
                                     <i class="fa-solid fa-pencil"></i>

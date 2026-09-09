@@ -42,7 +42,11 @@ public class ArticleService implements CrudService<ArticleDto, Article, Long> {
     public List<ArticleDto> readAll(){
         List<ArticleDto> dtos = new ArrayList<ArticleDto>();
         for(Article article: articleRepository.findAll()){
-            dtos.add(modelMapper.map(article, ArticleDto.class));
+            ArticleDto dto = modelMapper.map(article, ArticleDto.class);
+            if(article.getCategory() == null) {
+                dto.setCategory(null);
+            }
+            dtos.add(dto);
         }
         return dtos;
     }
@@ -51,7 +55,12 @@ public class ArticleService implements CrudService<ArticleDto, Article, Long> {
      public ArticleDto read(Long key){
         Optional<Article> optArticle = articleRepository.findById(key);
         if(optArticle.isPresent()){
-            return modelMapper.map(optArticle.get(), ArticleDto.class);
+            Article article = optArticle.get();
+            ArticleDto dto = modelMapper.map(article, ArticleDto.class);
+            if(article.getCategory() == null) {
+                dto.setCategory(null);
+            }
+            return dto;
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Author id=" + key + " not found");
         }
@@ -117,7 +126,9 @@ public class ArticleService implements CrudService<ArticleDto, Article, Long> {
         } else {
             updatedArticle.setImage(article.getImage());
 
-            if (!updatedArticle.equals(article)) {
+            if (article.getCategory() == null || updatedArticle.getCategory() == null) {
+                updatedArticle.setIsAccepted(null);
+            } else if (!updatedArticle.equals(article)) {
                 updatedArticle.setIsAccepted(null);
             } else {
                 updatedArticle.setIsAccepted(article.getIsAccepted());
@@ -125,7 +136,6 @@ public class ArticleService implements CrudService<ArticleDto, Article, Long> {
         }
 
         return modelMapper.map(articleRepository.save(updatedArticle), ArticleDto.class);
-
         } else {
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
@@ -154,15 +164,23 @@ public class ArticleService implements CrudService<ArticleDto, Article, Long> {
     public List<ArticleDto> searchByCategory(Category category){
         List<ArticleDto> dtos = new ArrayList<ArticleDto>();
         for(Article article: articleRepository.findByCategory(category)){
-            dtos.add(modelMapper.map(article, ArticleDto.class));
+            ArticleDto dto = modelMapper.map(article, ArticleDto.class);
+            if (article.getCategory() == null) {
+                dto.setCategory(null);
+            }
+            dtos.add(dto);
         }
         return dtos;
     }
 
-    public List<ArticleDto> searchByAuthor(User user){
+        public List<ArticleDto> searchByAuthor(User user){
         List<ArticleDto> dtos = new ArrayList<ArticleDto>();
         for(Article article: articleRepository.findByUser(user)){
-            dtos.add(modelMapper.map(article, ArticleDto.class));
+            ArticleDto dto = modelMapper.map(article, ArticleDto.class);
+            if(article.getCategory() == null) {
+                dto.setCategory(null);
+            }
+            dtos.add(dto);
         }
         return dtos;
     }
@@ -176,7 +194,11 @@ public class ArticleService implements CrudService<ArticleDto, Article, Long> {
     public List<ArticleDto> search(String keyword){
         List<ArticleDto> dtos = new ArrayList<ArticleDto>();
         for(Article article: articleRepository.search(keyword)){
-            dtos.add(modelMapper.map(article, ArticleDto.class));
+            ArticleDto dto = modelMapper.map(article, ArticleDto.class);
+            if(article.getCategory() == null) {
+                dto.setCategory(null);
+            }
+            dtos.add(dto);
         }
         return dtos;
     }
